@@ -122,11 +122,11 @@ if __name__ == "__main__":
             # Get the prediction
             predicted_price = model.predict(features_transformed)[0]
 
-            # Display the prediction with enhanced styling
-            st.markdown(
-                f'<div class="predicted-price">RM {predicted_price:,.2f}</div>',
-                unsafe_allow_html=True,
-            )
+    # Display the prediction with enhanced styling
+    st.markdown(
+        f'<div class="predicted-price">RM {predicted_price:,.2f}</div>',
+        unsafe_allow_html=True,
+    )
 
     st.write("*Please use the sidebar to input features and predict house price.")
 
