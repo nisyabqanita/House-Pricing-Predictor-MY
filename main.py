@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from model4 import HousePricePredictor
+from model import HousePricePredictor
 
 # Load the model
 predictor = HousePricePredictor('mas_housing.csv')
@@ -51,7 +51,7 @@ st.write(input_df)
 if st.button("Predict House Price"):
     predicted_price = predictor.predict_price(input_df.iloc[0].tolist())
     st.subheader("Predicted House Price")
-    st.write(f"RM {predicted_price:.2f}")
+    st.write(f"RM {predicted_price:,.2f}")
 
 # Main function
 if __name__ == "__main__":

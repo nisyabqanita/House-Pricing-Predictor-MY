@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from scipy import stats
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split, cross_val_score
@@ -18,8 +19,44 @@ class HousePricePredictor:
         print("Data loaded. Size: ", self.data.shape)
         
         self.clean_data()
+        self.eda()  # Add EDA
+        self.hypothesis_testing()  # Add Hypothesis Testing
         self.prepare_data()
         self.train_and_evaluate_model()
+
+    def eda(self):
+        """Perform Exploratory Data Analysis."""
+        print("Performing EDA...")
+        sns.histplot(self.data['price'], bins=50, kde=True)
+        plt.title('Price Distribution')
+        plt.xlabel('Price')
+        plt.ylabel('Frequency')
+        plt.savefig('price_distribution_histplot.png')  # Save the plot
+        # plt.show()
+        
+        sns.pairplot(self.data[['price', 'rooms', 'bathrooms', 'size']])
+        # plt.show()
+        plt.savefig('pairplot.png')  # Save the plot
+        
+        plt.figure(figsize=(10, 8))
+        sns.heatmap(self.data.corr(), annot=True, cmap='coolwarm')
+        plt.title('Correlation Heatmap')
+        # plt.show()
+        plt.savefig('correlation_heatmap.png')  # Save the plot
+        
+    def hypothesis_testing(self):
+        """Perform Hypothesis Testing."""
+        print("Performing Hypothesis Testing...")
+        condo_prices = self.data[self.data['property_type'] == 'condominium']['price']
+        terrace_prices = self.data[self.data['property_type'] == 'terrace']['price']
+        
+        t_stat, p_value = stats.ttest_ind(condo_prices, terrace_prices)
+        print(f"T-test between condominium and terrace prices: t-statistic = {t_stat}, p-value = {p_value}")
+        
+        if p_value < 0.05:
+            print("Reject the null hypothesis: There is a significant difference between condominium and terrace prices.")
+        else:
+            print("Fail to reject the null hypothesis: No significant difference between condominium and terrace prices.")
         
     def clean_data(self):
         """Clean the dataset by removing unnecessary columns and handling missing values."""
