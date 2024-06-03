@@ -1,12 +1,13 @@
 import streamlit as st
 import pandas as pd
-from model import HousePricePredictor
+import joblib
 
-# Load the model
-predictor = HousePricePredictor('mas_housing.csv')
+# Load the pre-trained model and preprocessor
+model = joblib.load("house_price_predictor_model.sav")
+preprocessor = joblib.load("preprocessor.sav")
 
 # Title
-st.title("House Price Prediction")
+st.title("House Price Prediction Malaysia")
 
 # Sidebar for user input
 st.sidebar.header("Input Features")
@@ -15,20 +16,46 @@ st.sidebar.header("Input Features")
 def user_input_features():
     rooms = st.sidebar.number_input("Number of Rooms", min_value=1, max_value=10, value=3)
     bathrooms = st.sidebar.number_input("Number of Bathrooms", min_value=1, max_value=10, value=2)
-    size = st.sidebar.number_input("Size (sq ft)", min_value=100, max_value=10000, value=1500)
+    size = st.sidebar.number_input("Size (sq ft)", min_value=100, max_value=10000, value=1500, step=100)
     car_parks = st.sidebar.number_input("Number of Car Parks", min_value=0, max_value=5, value=1)
-    location = st.sidebar.selectbox("Location", options=[
-        'klcc,_kuala_lumpur', 'ampang,_kuala_lumpur', 'cheras,_kuala_lumpur', 
-        'mont_kiara,_kuala_lumpur', 'bangsar,_kuala_lumpur'
-    ])
-    property_type = st.sidebar.selectbox("Property Type", options=[
-        'condominium', 'terrace', 'bungalow', 
-        'semi-detached_house', 'apartment', 'flat'
-    ])
-    furnishing = st.sidebar.selectbox("Furnishing", options=[
-        'fully_furnished', 'partly_furnished', 'unfurnished'
-    ])
-    
+
+    location_mapping = {
+    'KLCC, Kuala Lumpur': 'klcc,_kuala_lumpur',
+    'Ampang, Kuala Lumpur': 'ampang,_kuala_lumpur',
+    'Cheras, Kuala Lumpur': 'cheras,_kuala_lumpur',
+    'Mont Kiara, Kuala Lumpur': 'mont_kiara,_kuala_lumpur',
+    'Bangsar, Kuala Lumpur': 'bangsar,_kuala_lumpur'
+    }
+
+    property_type_mapping = {
+        'Condominium': 'condominium',
+        'Terrace': 'terrace',
+        'Bungalow': 'bungalow',
+        'Semi-detached House': 'semi-detached_house',
+        'Apartment': 'apartment',
+        'Flat': 'flat'
+    }
+
+    furnishing_mapping = {
+        'Fully Furnished': 'fully_furnished',
+        'Partly Furnished': 'partly_furnished',
+        'Unfurnished': 'unfurnished'
+    }
+
+    # Sidebar Inputs
+    location = st.sidebar.selectbox(
+        "Location",
+        options=list(location_mapping.keys())
+    )
+    property_type = st.sidebar.selectbox(
+        "Property Type",
+        options=list(property_type_mapping.keys())
+    )
+    furnishing = st.sidebar.selectbox(
+        "Furnishing",
+        options=list(furnishing_mapping.keys())
+    )
+
     data = {
         'rooms': rooms,
         'bathrooms': bathrooms,
@@ -49,7 +76,9 @@ st.write(input_df)
 
 # Prediction
 if st.button("Predict House Price"):
-    predicted_price = predictor.predict_price(input_df.iloc[0].tolist())
+    # Apply the same preprocessing steps as training data
+    features_transformed = preprocessor.transform(input_df)
+    predicted_price = model.predict(features_transformed)[0]
     st.subheader("Predicted House Price")
     st.write(f"RM {predicted_price:,.2f}")
 
