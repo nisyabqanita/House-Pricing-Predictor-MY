@@ -29,37 +29,17 @@ def user_input_features():
         "Number of Car Parks", min_value=0, max_value=5, value=1
     )
 
-    location_mapping = {
-        "KLCC, Kuala Lumpur": "klcc,_kuala_lumpur",
-        "Ampang, Kuala Lumpur": "ampang,_kuala_lumpur",
-        "Cheras, Kuala Lumpur": "cheras,_kuala_lumpur",
-        "Mont Kiara, Kuala Lumpur": "mont_kiara,_kuala_lumpur",
-        "Bangsar, Kuala Lumpur": "bangsar,_kuala_lumpur",
-    }
-
-    property_type_mapping = {
-        "Condominium": "condominium",
-        "Terrace": "terrace",
-        "Bungalow": "bungalow",
-        "Semi-detached House": "semi-detached_house",
-        "Apartment": "apartment",
-        "Flat": "flat",
-    }
-
-    furnishing_mapping = {
-        "Fully Furnished": "fully_furnished",
-        "Partly Furnished": "partly_furnished",
-        "Unfurnished": "unfurnished",
-    }
-
-    # Sidebar Inputs
-    location = st.sidebar.selectbox("Location", options=list(location_mapping.keys()))
-    property_type = st.sidebar.selectbox(
-        "Property Type", options=list(property_type_mapping.keys())
-    )
-    furnishing = st.sidebar.selectbox(
-        "Furnishing", options=list(furnishing_mapping.keys())
-    )
+    location = st.sidebar.selectbox("Location", options=[
+        'klcc,_kuala_lumpur', 'ampang,_kuala_lumpur', 'cheras,_kuala_lumpur', 
+        'mont_kiara,_kuala_lumpur', 'bangsar,_kuala_lumpur'
+    ])
+    property_type = st.sidebar.selectbox("Property Type", options=[
+        'condominium', 'terrace', 'bungalow', 
+        'semi-detached_house', 'apartment', 'flat'
+    ])
+    furnishing = st.sidebar.selectbox("Furnishing", options=[
+        'fully_furnished', 'partly_furnished', 'unfurnished'
+    ])
 
     data = {
         "rooms": rooms,
