@@ -247,3 +247,10 @@ if __name__ == "__main__":
         )
 
     st.write("*Please use the sidebar to input features and predict house price.")
+
+    # Display saved plots
+    st.subheader("Exploratory Data Analysis (EDA) Plots")
+
+    st.image("price_distribution_histplot.png", caption="Distribution of House Prices")
+    st.image("correlation_heatmap.png", caption="Correlation")
+    st.image("pairplot.png", caption="Pairlot")
