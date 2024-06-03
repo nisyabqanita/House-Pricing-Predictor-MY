@@ -81,6 +81,11 @@ def loading_message(step):
 
 # Main function
 if __name__ == "__main__":
+    st.markdown("---")
+    st.markdown(
+        '<h6>Made with &nbsp<img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit logo" height="16">&nbsp by Ahmad, Nisya, Hendrick, Qaim</h6>',
+        unsafe_allow_html=True,
+    )
     # Adding custom CSS styling for the prediction text
     st.markdown(
         """
@@ -106,21 +111,22 @@ if __name__ == "__main__":
     st.write(input_df)
 
     # Prediction
-    if st.button("Predict House Price"):
-        loading_message("Getting input")
-        loading_message("Running Model")
+    with st.sidebar:
+        if st.button("Predict House Price"):
+            loading_message("Getting input")
+            loading_message("Running Model")
 
-        # Apply the same preprocessing steps as training data
-        features_transformed = preprocessor.transform(input_df)
+            # Apply the same preprocessing steps as training data
+            features_transformed = preprocessor.transform(input_df)
 
-        # Get the prediction
-        predicted_price = model.predict(features_transformed)[0]
+            # Get the prediction
+            predicted_price = model.predict(features_transformed)[0]
 
-        # Display the prediction with enhanced styling
-        st.markdown(
-            f'<div class="predicted-price">RM {predicted_price:,.2f}</div>',
-            unsafe_allow_html=True,
-        )
+            # Display the prediction with enhanced styling
+            st.markdown(
+                f'<div class="predicted-price">RM {predicted_price:,.2f}</div>',
+                unsafe_allow_html=True,
+            )
 
     st.write("*Please use the sidebar to input features and predict house price.")
 
@@ -130,3 +136,6 @@ if __name__ == "__main__":
     st.image("price_distribution_histplot.png", caption="Distribution of House Prices")
     st.image("correlation_heatmap.png", caption="Correlation")
     st.image("pairplot.png", caption="Pairlot")
+
+    # with st.sidebar:
+        
