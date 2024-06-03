@@ -79,6 +79,12 @@ def loading_message(step):
         time.sleep(1)
 
 
+# Function to get prediction
+def get_prediction(input_df):
+    features_transformed = preprocessor.transform(input_df)
+    return model.predict(features_transformed)[0]
+
+
 # Main function
 if __name__ == "__main__":
     st.markdown("---")
@@ -110,23 +116,29 @@ if __name__ == "__main__":
 
     st.write(input_df)
 
-    # Prediction
+    # Initial prediction using default values
+    if "auto_run_done" not in st.session_state:
+        st.session_state.auto_run_done = False
+
+    if not st.session_state.auto_run_done:
+        initial_predicted_price = get_prediction(input_df)
+        st.session_state.auto_run_done = True
+    else:
+        initial_predicted_price = None
+
+    # Prediction on button click
     with st.sidebar:
         if st.button("Predict House Price"):
             loading_message("Getting input")
             loading_message("Running Model")
-
-            # Apply the same preprocessing steps as training data
-            features_transformed = preprocessor.transform(input_df)
-
-            # Get the prediction
-            predicted_price = model.predict(features_transformed)[0]
+            initial_predicted_price = get_prediction(input_df)
 
     # Display the prediction with enhanced styling
-    st.markdown(
-        f'<div class="predicted-price">RM {predicted_price:,.2f}</div>',
-        unsafe_allow_html=True,
-    )
+    if initial_predicted_price is not None:
+        st.markdown(
+            f'<div class="predicted-price">RM {initial_predicted_price:,.2f}</div>',
+            unsafe_allow_html=True,
+        )
 
     st.write("*Please use the sidebar to input features and predict house price.")
 
@@ -136,6 +148,3 @@ if __name__ == "__main__":
     st.image("price_distribution_histplot.png", caption="Distribution of House Prices")
     st.image("correlation_heatmap.png", caption="Correlation")
     st.image("pairplot.png", caption="Pairlot")
-
-    # with st.sidebar:
-        
